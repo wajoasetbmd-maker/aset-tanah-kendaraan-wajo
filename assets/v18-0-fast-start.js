@@ -1,7 +1,7 @@
 /* WEB V18.0 — startup cepat, navigasi tanpa blocking, cache-read / online-write */
 (() => {
   'use strict';
-  const VERSION = '18.0.0';
+  const VERSION = '18.0.1';
   const assetName = () => String(window.state?.asset || 'KENDARAAN').toUpperCase();
   const lastUserKey = () => `aset_wajo_web_v180_last_${assetName()}`;
   const cacheKey = username => `aset_wajo_web_v180_${assetName()}_${String(username || '').trim().toUpperCase()}`;
@@ -24,7 +24,16 @@
     const role = state.user.role || '-';
     const n = document.getElementById('userMiniName'); if (n) n.textContent = name;
     const r = document.getElementById('userMiniRole'); if (r) r.textContent = role;
-    const t = document.getElementById('topUser'); if (t) t.textContent = `${state.asset} · ${name} · ${role}`;
+    const t = document.getElementById('topUser');
+    if (t) {
+      let identity = document.getElementById('topUserIdentity');
+      if (!identity) {
+        identity = document.createElement('span');
+        identity.id = 'topUserIdentity';
+        t.insertBefore(identity, t.firstChild);
+      }
+      identity.textContent = `${state.asset} · ${name} · ${role}`;
+    }
   };
   const showApp = () => {
     document.getElementById('loginScreen')?.classList.add('hidden');
@@ -36,6 +45,32 @@
   const contentError = error => {
     const c=document.getElementById('content');
     if(c) c.innerHTML=`<section class="panel"><div class="panel-body"><div class="danger">${typeof esc==='function'?esc(error?.message||String(error)):String(error)}</div></div></section>`;
+  };
+
+  let sessionRedirecting = false;
+  const isSessionExpired = error => /sesi login berakhir|session (expired|invalid)|token.*(expired|invalid)/i.test(String(error?.message || error || ''));
+
+  const handleSessionExpired = error => {
+    if (sessionRedirecting) return;
+    sessionRedirecting = true;
+    try { safeStoreRemove('v17_session_' + state.asset); } catch (_) {}
+    state.token = '';
+    try { if (typeof loading === 'function') loading(false); } catch (_) {}
+    try { if (typeof closeModal === 'function') closeModal(); } catch (_) {}
+
+    const app = document.getElementById('appScreen');
+    const login = document.getElementById('loginScreen');
+    if (app) app.classList.add('hidden');
+    if (login) login.classList.remove('hidden');
+
+    const errorBox = document.getElementById('loginError');
+    if (errorBox) {
+      errorBox.textContent = 'Sesi login telah berakhir. Silakan login kembali. Data yang sudah tersimpan di server tetap aman.';
+      errorBox.classList.remove('hidden');
+    }
+    const password = document.getElementById('loginPassword');
+    if (password) password.value = '';
+    setTimeout(() => document.getElementById('loginUsername')?.focus(), 50);
   };
 
   async function navigateFast(view) {
@@ -80,13 +115,12 @@
       if (state.asset==='KENDARAAN' && state.view==='dashboard' && typeof renderDashboard==='function') renderDashboard();
     } catch(error) {
       console.warn('Bootstrap latar belakang gagal:', error);
-      if (/sesi login berakhir|session/i.test(String(error?.message||error))) {
-        try { safeStoreRemove('v17_session_'+state.asset); } catch(_) {}
-      }
+      if (isSessionExpired(error)) handleSessionExpired(error);
     }
   }
 
   async function startFast() {
+    sessionRedirecting = false;
     const cached = readCache();
     if (!state.user && cached?.user) state.user=cached.user;
     if (!state.bootstrap && cached?.bootstrap) state.bootstrap=cached.bootstrap;
@@ -96,14 +130,40 @@
       state.bootstrap=fresh; state.user=fresh.user; writeCache();
     }
     showApp();
-    if(state.asset==='TANAH') { renderLandShell(); await landNavigateFast('dashboard'); }
-    else { renderVehicleShell(); await navigateFast('dashboard'); }
+    if(state.asset==='TANAH') {
+      renderLandShell();
+      setTop();
+      await landNavigateFast('dashboard');
+    } else {
+      renderVehicleShell();
+      setTop();
+      await navigateFast('dashboard');
+    }
+    setTimeout(setTop, 0);
+    setTimeout(setTop, 250);
     setTimeout(refreshBootstrapInBackground, 50);
     setTimeout(() => window.WebCacheOnlineV180?.ensure?.(), 300);
     if(state.user?.mustChange) setTimeout(()=>{toast('Password awal harus segera diganti.','error');openPasswordModal(true);},500);
   }
 
   function install() {
+    if (window.__webV1801Installed) return;
+    window.__webV1801Installed = true;
+
+    const priorServer = window.server;
+    if (typeof priorServer === 'function' && !priorServer.__v1801SessionGuard) {
+      const guardedServer = async function guardedServerV1801(fn, ...args) {
+        try {
+          return await priorServer(fn, ...args);
+        } catch (error) {
+          if (isSessionExpired(error)) handleSessionExpired(error);
+          throw error;
+        }
+      };
+      guardedServer.__v1801SessionGuard = true;
+      window.server = guardedServer;
+    }
+
     const legacyLogin = window.handleLogin;
     window.handleLogin = async function handleLoginV180(e) {
       if (navigator.onLine === false) return legacyLogin.apply(this, arguments);
@@ -125,7 +185,7 @@
     window.startApp = startFast;
     window.navigate = navigateFast;
     window.landNavigate = landNavigateFast;
-    window.WebFastV180={version:VERSION,start:startFast,refreshBootstrap:refreshBootstrapInBackground};
+    window.WebFastV180={version:VERSION,start:startFast,refreshBootstrap:refreshBootstrapInBackground,isSessionExpired,handleSessionExpired,setTop};
   }
 
   document.addEventListener('DOMContentLoaded', install, {once:true});

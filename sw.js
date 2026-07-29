@@ -1,4 +1,4 @@
-const CACHE='aset-wajo-v18-0';
+const CACHE='aset-wajo-v18-0-1';
 const SHELL=['./','./index.html','./manifest.webmanifest','./assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png','./assets/v17-6.css','./assets/v17-6.js','./assets/v17-9-cache-read-online-write.js','./assets/v18-0-fast-start.js'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});

@@ -848,7 +848,8 @@
       if (state.view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
     } catch (error) {
       console.warn('Download cache web gagal:', error);
-      updateStatus('Cache data belum lengkap', 'error');
+      if (window.WebFastV180?.isSessionExpired?.(error)) window.WebFastV180.handleSessionExpired(error);
+      else updateStatus('Cache data belum lengkap', 'error');
     } finally {
       snapshotRunning = false;
     }
@@ -864,7 +865,10 @@
       const local = await getMeta(key(userScope(), 'revision'), null);
       if (!local || String(local.revision) !== String(remote.revision)) await downloadSnapshot(true);
       else updateStatus('Cache data terbaru', 'ready');
-    } catch (error) { console.warn('Pemeriksaan revisi web gagal:', error); }
+    } catch (error) {
+      console.warn('Pemeriksaan revisi web gagal:', error);
+      if (window.WebFastV180?.isSessionExpired?.(error)) window.WebFastV180.handleSessionExpired(error);
+    }
   }
 
   function ensureStatusNode() {
