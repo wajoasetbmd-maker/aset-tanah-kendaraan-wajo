@@ -1,0 +1,20 @@
+ASET TANAH DAN KENDARAAN — UPDATE V17.5
+========================================
+
+PERUBAHAN
+- Daftar Tanah pada HP tampil sebagai kartu yang rapi.
+- Daftar Kendaraan pada HP tampil sebagai kartu yang rapi.
+- Tampilan tabel desktop tetap dipertahankan.
+- Modal Tambah/Edit Data Tanah menggunakan layout flex dan area isi dapat digulir penuh pada HP.
+- Header dan tombol Simpan/Batal tetap terlihat; isi form dapat digulir di antaranya.
+- Dukungan safe-area Android/iPhone dan inertial scrolling ditambahkan.
+
+CARA UPDATE
+1. Upload dan Replace semua file paket Cloudflare Pages V17.5 ke repository GitHub.
+2. Pastikan assets/v17-5.js dan assets/v17-5.css tersedia.
+3. Hapus assets/v17-4.js dan assets/v17-4.css jika masih ada.
+4. Tunggu Cloudflare deployment Success.
+5. Buka https://aset-tanah-kendaraan-wajo.pages.dev/?v=17-5
+6. Pada HP, tutup tab/pintasan lama lalu buka ulang. Jika perlu, hapus cache situs sekali.
+
+Backend Apps Script dan variabel Cloudflare tidak berubah.
