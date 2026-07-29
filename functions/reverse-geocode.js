@@ -32,7 +32,7 @@ async function searchLocation(query) {
       headers: {
         accept: 'application/json',
         'accept-language': 'id-ID,id;q=0.9,en;q=0.6',
-        'user-agent': 'AsetTanahKendaraanWajo/17.3 (BPKPD Kabupaten Wajo)'
+        'user-agent': 'AsetTanahKendaraanWajo/17.4 (BPKPD Kabupaten Wajo)'
       }
     });
     if (!upstream.ok) throw new Error('Layanan pencarian wilayah tidak merespons.');
@@ -73,7 +73,7 @@ async function reverseLocation(lat, lng) {
       headers: {
         accept: 'application/json',
         'accept-language': 'id-ID,id;q=0.9,en;q=0.6',
-        'user-agent': 'AsetTanahKendaraanWajo/17.3 (BPKPD Kabupaten Wajo)'
+        'user-agent': 'AsetTanahKendaraanWajo/17.4 (BPKPD Kabupaten Wajo)'
       }
     });
     if (!upstream.ok) throw new Error('Layanan lokasi tidak merespons.');
