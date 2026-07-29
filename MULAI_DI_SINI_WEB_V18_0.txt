@@ -1,0 +1,19 @@
+1. APPS SCRIPT
+   - Ganti Api.gs menggunakan BACKEND_APPS_SCRIPT/Api.gs.
+   - Tambahkan file Script baru bernama WebV180Performance, lalu isi dari WebV180Performance.gs.
+   - Jalankan diagnoseWebV180Performance. Pastikan ok:true.
+   - Deploy > Manage deployments > Edit deployment lama > New version > Deploy.
+
+2. CLOUDFLARE PAGES / GITHUB
+   - Upload seluruh isi paket web ke root repository.
+   - Jangan masukkan ke folder tambahan.
+   - Commit dan tunggu deployment selesai.
+
+3. BROWSER
+   - Buka web lalu tekan Ctrl+F5 satu kali.
+   - Login online.
+   - Biarkan cache pertama selesai sampai indikator "Cache siap".
+   - Setelah itu uji Dashboard > Data Kendaraan/Tanah > Detail > kembali > Cari/Filter.
+
+4. SURAT
+   - Surat tetap wajib online dan langsung disimpan ke Spreadsheet/server.

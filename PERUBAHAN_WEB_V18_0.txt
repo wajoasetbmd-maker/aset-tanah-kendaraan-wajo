@@ -1,0 +1,20 @@
+WEB V18.0 — PERFORMA CACHE CEPAT
+
+ARSITEKTUR:
+- Dashboard, daftar, pencarian, filter, dan perpindahan halaman membaca IndexedDB/browser cache.
+- Tambah/edit/hapus, pejabat, pengguna, pengaturan, dan surat tetap wajib online.
+- Surat rekomendasi tetap dibuat server agar nomor tidak ganda dan template Google Docs tetap resmi.
+
+PERBAIKAN:
+1. Login berulang memakai bootstrap yang tersimpan agar aplikasi tampil lebih cepat.
+2. Navigasi tidak lagi memakai overlay loading penuh; halaman menampilkan data cache/skeleton.
+3. Snapshot kendaraan ditingkatkan dari maksimal 75 data per permintaan menjadi hingga 1.000 data.
+4. Snapshot tanah membaca potongan sumber tanpa menyaring seluruh Spreadsheet berulang kali pada setiap halaman.
+5. Dashboard dihitung dari cache lokal setelah snapshot, tidak memanggil Spreadsheet lagi.
+6. Detail kendaraan/tanah hanya diambil dari server pada pembukaan pertama, lalu disimpan sebagai cache detail.
+7. Pemeriksaan perubahan hanya memakai nomor revisi ringan setiap 5 menit / saat jendela kembali aktif.
+
+CATATAN:
+- Login pertama dan cache pertama tetap membutuhkan internet dan waktu untuk mengunduh data.
+- Setelah status "Cache siap", perpindahan menu, cari, filter, dan pagination harus jauh lebih cepat.
+- Browser tidak boleh memakai mode Incognito dan data situs jangan dihapus.

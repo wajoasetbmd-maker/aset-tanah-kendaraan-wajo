@@ -2,14 +2,14 @@
 (() => {
   'use strict';
 
-  const VERSION = '17.9.0';
+  const VERSION = '18.0.0';
   const DB_NAME = 'aset-wajo-web-local-first';
   const DB_VERSION = 1;
   const MAX_GPS_ACCURACY = 35;
   const TARGET_GPS_ACCURACY = 20;
-  const SNAPSHOT_PAGE_SIZE = 250;
+  const SNAPSHOT_PAGE_SIZE = 1000;
   const SYNC_BATCH_SIZE = 5;
-  const REFRESH_CHECK_MS = 10 * 60 * 1000;
+  const REFRESH_CHECK_MS = 5 * 60 * 1000;
   const DEVICE_ID_KEY = 'aset_wajo_web_device_id';
 
   let dbPromise = null;
@@ -100,13 +100,13 @@
     return String(module === 'TANAH' ? (row.eid || row.id || '') : (row.id || '')).trim();
   }
 
-  async function putRecords(module, rows, source='server') {
+  async function putRecords(module, rows, source='server', detail=false) {
     if (!Array.isArray(rows) || !rows.length) return;
     await idb('records', 'readwrite', store => {
       for (const row of rows) {
         const id = recordId(module, row);
         if (!id) continue;
-        store.put({key:`${module}:${id}`, module, id, source, data:row, updatedAt:Date.now()});
+        store.put({key:`${module}:${id}`, module, id, source, detail:!!detail, data:row, updatedAt:Date.now()});
       }
     });
     if (memoryRecords[module]) {
@@ -119,12 +119,17 @@
     }
   }
 
-  async function getRecord(module, id) {
+  async function getRecord(module, id, requireDetail=false) {
     const db = await openDb();
     return new Promise((resolve, reject) => {
       const tx = db.transaction('records', 'readonly');
       const req = tx.objectStore('records').get(`${module}:${id}`);
-      req.onsuccess = () => resolve(req.result ? req.result.data : null);
+      req.onsuccess = () => {
+        const item = req.result || null;
+        if (!item) return resolve(null);
+        if (requireDetail && !item.detail) return resolve(null);
+        resolve(item.data || null);
+      };
       req.onerror = () => reject(req.error);
     });
   }
@@ -188,7 +193,7 @@
         }
         for (const row of rows || []) {
           const id = recordId(module, row);
-          if (id) store.put({key:`${module}:${id}`, module, id, source:'server', data:row, updatedAt:Date.now()});
+          if (id) store.put({key:`${module}:${id}`, module, id, source:'server', detail:false, data:row, updatedAt:Date.now()});
         }
       };
       tx.oncomplete = resolve;
@@ -634,9 +639,9 @@
     if (fn === 'getDashboard') return await buildLocalDashboard(module);
     if (fn === 'listKendaraan') return await listLocalRecords('KENDARAAN', args[1] || {});
     if (fn === 'listDashboardVehicles') return await listLocalRecords('KENDARAAN', args[1] || {});
-    if (fn === 'getKendaraan') return await getRecord('KENDARAAN', String(args[1] || ''));
+    if (fn === 'getKendaraan') return await getRecord('KENDARAAN', String(args[1] || ''), true);
     if (fn === 'listTanah') return await listLocalRecords('TANAH', {page:args[1], pageSize:args[2], search:args[3], filter:args[4]});
-    if (fn === 'getTanah') return await getRecord('TANAH', String(args[1] || ''));
+    if (fn === 'getTanah') return await getRecord('TANAH', String(args[1] || ''), true);
     if (fn === 'getLetterForm') return await localLetterForm(String(args[1] || ''));
     if (fn === 'getSuratForm') { const letter = await getLocalLetter(String(args[1] || '')); return letter ? await localLetterForm(letter.vehicleId, letter) : null; }
     if (fn === 'listSurat') {
@@ -660,9 +665,9 @@
     }
     if (fn === 'getDashboard') await putCache(key(userScope(), 'dashboard'), result);
     if (fn === 'listKendaraan' || fn === 'listDashboardVehicles') await putRecords('KENDARAAN', result.rows || [], 'server');
-    if (fn === 'getKendaraan') await putRecords('KENDARAAN', [result], 'server');
+    if (fn === 'getKendaraan') await putRecords('KENDARAAN', [result], 'server', true);
     if (fn === 'listTanah') await putRecords('TANAH', result.rows || [], 'server');
-    if (fn === 'getTanah') await putRecords('TANAH', [result], 'server');
+    if (fn === 'getTanah') await putRecords('TANAH', [result], 'server', true);
     if (fn === 'listPejabat') {
       state.bootstrap.officersAll = result;
       state.bootstrap.officers = (result || []).filter(x => x.active !== false);
@@ -718,20 +723,20 @@
     try {
       if (fn === 'saveKendaraan' && result?.id) {
         const row = await cloudServer('getKendaraan', state.token, result.id);
-        await putRecords('KENDARAAN', [row], 'server');
+        await putRecords('KENDARAAN', [row], 'server', true);
       } else if (fn === 'deleteKendaraan') {
         await deleteRecordFromCache('KENDARAAN', String(args[1] || ''));
       } else if (fn === 'saveTanah' && (result?.id || result?.eid)) {
         const id = result.id || result.eid;
         const row = await cloudServer('getTanah', state.token, id);
-        await putRecords('TANAH', [row], 'server');
+        await putRecords('TANAH', [row], 'server', true);
       } else if (fn === 'deleteTanah') {
         await deleteRecordFromCache('TANAH', String(args[1] || ''));
       } else if (fn === 'saveSurat') {
         const vehicleId = String(args[1]?.vehicleId || '');
         if (vehicleId) {
           const row = await cloudServer('getKendaraan', state.token, vehicleId).catch(() => null);
-          if (row) await putRecords('KENDARAAN', [row], 'server');
+          if (row) await putRecords('KENDARAAN', [row], 'server', true);
         }
       }
 
@@ -802,30 +807,45 @@
         Object.assign(state.bootstrap, master.bootstrapPatch);
         await putCache(key(userScope(), 'bootstrap'), state.bootstrap);
       }
-      const info = await cloudServer('getOfflineSnapshotInfoV18', state.token);
-      const totalRows = Math.max(1, Number(info.totalRows || 1));
+
+      let optimized = true;
+      let info;
+      try {
+        info = await cloudServer('getWebSnapshotInfoV180', state.token);
+      } catch (error) {
+        optimized = false;
+        info = await cloudServer('getOfflineSnapshotInfoV18', state.token);
+      }
+
+      const totalRows = Math.max(1, Number(info.totalRows || info.sourceRows || 1));
       const freshRows = [];
-      let cursor = '1';
+      let cursor = optimized ? '0' : '1';
       let received = 0;
-      while (cursor) {
-        const page = await cloudServer('getOfflineSnapshotV18', state.token, cursor, SNAPSHOT_PAGE_SIZE);
+      while (cursor !== '') {
+        const page = optimized
+          ? await cloudServer('getWebSnapshotPageV180', state.token, cursor, SNAPSHOT_PAGE_SIZE)
+          : await cloudServer('getOfflineSnapshotV18', state.token, cursor, SNAPSHOT_PAGE_SIZE);
         freshRows.push(...(page.rows || []));
         received += (page.rows || []).length;
-        const pct = Math.min(99, Math.round((received / totalRows) * 100));
-        syncView.current = `Download ${module} · ${received}/${totalRows}`;
+        const progressBase = Number(page.scanned || received);
+        const pct = page.done ? 99 : Math.min(98, Math.max(1, Math.round((progressBase / totalRows) * 100)));
+        syncView.current = `Download ${module} · ${received} data`;
         syncView.percent = pct;
-        updateStatus(`Download ${received}/${totalRows} · ${pct}%`, 'syncing');
-        cursor = page.nextCursor || '';
-        await sleep(20);
+        updateStatus(`Download ${received} data · ${pct}%`, 'syncing');
+        cursor = page.nextCursor == null ? '' : String(page.nextCursor);
+        if (page.done) cursor = '';
+        await sleep(0);
       }
       await replaceServerRecords(module, freshRows);
-      const dashboard = await cloudServer('getDashboard', state.token);
+      const dashboard = await buildLocalDashboard(module);
       await putCache(key(userScope(), 'dashboard'), dashboard);
+      if (state.bootstrap) state.bootstrap.dashboard = dashboard;
       const revision = await cloudServer('getOfflineRevisionV183', state.token);
       await putMeta(key(userScope(), 'revision'), revision);
       await putMeta(key(userScope(), 'snapshotReady'), true);
       await putMeta(key(userScope(), 'snapshotAt'), Date.now());
-      updateStatus('Cache data siap', 'ready');
+      updateStatus(`Cache siap · ${freshRows.length} data`, 'ready');
+      if (state.view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
     } catch (error) {
       console.warn('Download cache web gagal:', error);
       updateStatus('Cache data belum lengkap', 'error');
@@ -1214,5 +1234,6 @@
 
   document.addEventListener('DOMContentLoaded', installHooks, {once:true});
   if (document.readyState !== 'loading') installHooks();
-  window.WebCacheOnlineV179 = {version:VERSION, refresh:() => refreshIfChanged(true), download:() => downloadSnapshot(true)};
+  window.WebCacheOnlineV180 = {version:VERSION, refresh:() => refreshIfChanged(true), download:() => downloadSnapshot(true), ensure:() => downloadSnapshot(false)};
+  window.WebCacheOnlineV179 = window.WebCacheOnlineV180;
 })();
