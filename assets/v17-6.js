@@ -1455,7 +1455,7 @@
 
   const byId = id => document.getElementById(id);
   const textValue = id => String(byId(id)?.value || '').trim();
-  const validPoint = (lat, lng) => Number.isFinite(Number(lat)) && Number.isFinite(Number(lng)) && Number(lat) >= -90 && Number(lat) <= 90 && Number(lng) >= -180 && Number(lng) <= 180;
+  const validPoint = (lat, lng) => { const la=Number(lat), ln=Number(lng); return Number.isFinite(la)&&Number.isFinite(ln)&&la>=-90&&la<=90&&ln>=-180&&ln<=180&&(Math.abs(la)>0.000001||Math.abs(ln)>0.000001); };
   const escapeHtml = value => typeof esc === 'function' ? esc(value) : String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
   function activeRegion() {

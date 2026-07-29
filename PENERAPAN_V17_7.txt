@@ -1,0 +1,27 @@
+ASET TANAH DAN KENDARAAN WEB V17.7 — LOCAL-FIRST
+
+PENERAPAN CLOUDFLARE PAGES
+1. Ekstrak ZIP.
+2. Upload seluruh isi ZIP ke project Cloudflare Pages yang sama.
+3. Jangan ubah environment GAS_BACKEND_URL dan GAS_API_KEY.
+4. Pastikan backend Apps Script minimal V18.3 karena frontend memakai endpoint:
+   - getOfflineRevisionV183
+   - getOfflineMasterV182
+   - getOfflineSnapshotInfoV18
+   - getOfflineSnapshotV18
+   - syncOfflineBatchV18
+   - reserveLetterNumbersV18
+5. Setelah deployment selesai, buka aplikasi lalu tekan Ctrl+F5 satu kali.
+6. Login online pertama. Cache data akan diunduh di latar belakang.
+
+PERUBAHAN
+- Dashboard, daftar, detail, dan form membaca IndexedDB browser terlebih dahulu.
+- Perubahan kendaraan/tanah/surat disimpan lokal lalu disinkronkan bertahap.
+- Surat dibuka segera dari template HTML A4; tombol Cetak / Simpan PDF memakai dialog cetak browser.
+- GPS menunggu akurasi target ±20 m dan menolak hasil lebih buruk dari ±35 m.
+- Koordinat 0,0 tidak lagi dianggap valid.
+
+CATATAN GPS
+- Pada HP pilih izin lokasi Presisi/Accurate untuk browser.
+- Pada laptop, lokasi biasanya berasal dari Wi-Fi dan tidak bisa seakurat GPS HP.
+- Jika akurasi lebih buruk dari ±35 m, aplikasi tidak mengubah koordinat lama.

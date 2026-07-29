@@ -1,21 +1,21 @@
-CLOUDFLARE PAGES V17.2.1
+ASET TANAH DAN KENDARAAN — WEB V17.7 LOCAL-FIRST
+=================================================
 
-Perubahan:
-- Tampilan daftar tanah disamakan dengan tabel Data Kendaraan.
-- Toolbar pencarian, filter, tombol Cari, dan Tambah Tanah berada dalam panel header yang sama.
-- Header tabel memakai warna dan gaya tabel kendaraan.
-- Kode EID NT_... tidak lagi ditampilkan di bawah Uraian.
+Perubahan utama:
+- Dashboard, daftar, detail, dan form dibaca dari IndexedDB browser setelah cache awal tersedia.
+- Saat online, aplikasi hanya memeriksa nomor revisi server. Data diunduh ulang bila revisi berubah.
+- Simpan/edit/hapus kendaraan dan tanah masuk antrean lokal lalu disinkronkan bertahap.
+- Surat rekomendasi dibuka langsung dari template A4 lokal; penyimpanan ke server berjalan di latar belakang.
+- Format surat web mengikuti format default Google Docs: kop, nomor/perihal, identitas, rekomendasi, tanda tangan, penanggung jawab, dan tembusan.
+- GPS web memakai watchPosition dan hanya menerima hasil dengan akurasi memadai.
 
-CLOUDFLARE PAGES V17.2
+SYARAT BACKEND:
+Backend Apps Script minimal V18.3/V18.3.1 yang memiliki endpoint snapshot, master offline, sinkronisasi batch, reservasi nomor surat, dan revisi data.
 
-Nama project Cloudflare baru: aset-tanah-kendaraan-wajo
-Alamat yang dituju: https://aset-tanah-kendaraan-wajo.pages.dev
+PENERAPAN:
+Upload dan replace seluruh isi ZIP ini ke root repository Cloudflare Pages/GitHub. Tidak perlu mengganti variabel GAS_BACKEND_URL atau GAS_API_KEY.
+Setelah deployment selesai, buka aplikasi lalu lakukan hard refresh Ctrl+F5.
 
-Upload semua isi folder ini ke root repository GitHub, lalu buat Pages project BARU dengan nama di atas.
-Pertahankan environment variables GAS_BACKEND_URL dan GAS_API_KEY.
-
-Perubahan kendaraan:
-- Kolom NOMOR BERANGKAS BPKB tampil sebelum nama barang.
-- Role USER OPD tersedia.
-- USER dapat tambah/edit kendaraan dan upload BPKB/BAST/STNK/FOTO milik OPD sendiri.
-- USER tidak dapat membuat atau melihat surat, menghapus kendaraan, atau membuka Master Pejabat/Pengguna/Pengaturan.
+CATATAN:
+Login pertama dan pembuatan cache pertama harus online. Jika data situs/browser dihapus, cache lokal ikut terhapus.
+Sinkronisasi berjalan saat tab aplikasi aktif dan dilanjutkan ketika aplikasi dibuka kembali. Browser tidak menjamin pekerjaan JavaScript terus berjalan setelah seluruh browser ditutup.
