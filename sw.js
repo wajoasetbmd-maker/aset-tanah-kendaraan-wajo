@@ -1,14 +1,27 @@
-const CACHE='aset-wajo-v18-0-1';
-const SHELL=['./','./index.html','./manifest.webmanifest','./assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png','./assets/v17-6.css','./assets/v17-6.js','./assets/v17-9-cache-read-online-write.js','./assets/v18-0-fast-start.js'];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+const CACHE='aset-wajo-web-v18-0-2-clean';
+const SHELL=[
+  './','./index.html','./manifest.webmanifest',
+  './assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png',
+  './assets/v17-6.css','./assets/app-v1802.js',
+  './templates/surat_rekomendasi.html','./templates/tanda_terima_bpkb.html'
+];
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
+});
+self.addEventListener('activate',event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+});
 self.addEventListener('fetch',event=>{
-  const req=event.request;
-  const url=new URL(req.url);
-  if(req.method!=='GET'||url.pathname.startsWith('/api')||url.pathname.startsWith('/reverse-geocode'))return;
-  if(req.mode==='navigate'){
-    event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',copy)).catch(()=>{});return res}).catch(()=>caches.match('./index.html')));
+  const request=event.request;
+  const url=new URL(request.url);
+  if(request.method!=='GET'||url.pathname.startsWith('/api')||url.pathname.startsWith('/reverse-geocode')) return;
+  if(request.mode==='navigate'){
+    event.respondWith(fetch(request,{cache:'no-store'}).then(response=>{
+      const copy=response.clone(); caches.open(CACHE).then(cache=>cache.put('./index.html',copy)).catch(()=>{}); return response;
+    }).catch(()=>caches.match('./index.html')));
     return;
   }
-  event.respondWith(fetch(req).then(res=>{if(res&&res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(req,copy)).catch(()=>{});}return res}).catch(()=>caches.match(req)));
+  event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{
+    if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});} return response;
+  })));
 });
