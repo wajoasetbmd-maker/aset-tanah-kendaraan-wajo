@@ -1,12 +1,119 @@
-<!doctype html><html><head><meta charset="utf-8"><style>
-@page{size:A4;margin:10mm 13mm 11mm 13mm}*{box-sizing:border-box}body{font-family:"Times New Roman",serif;font-size:11pt;line-height:1.25;color:#000;margin:0}.kop{text-align:center;position:relative;min-height:86px}.kop img{display:block;margin:0 auto 1px;width:55px;height:60px;object-fit:contain}.kop .inst1{font-size:15pt;font-weight:400;line-height:1.05}.kop .inst2{font-size:13pt;font-weight:700;line-height:1.05}.kop .alamat{font-size:10pt;line-height:1.12}.rule{border:0;border-top:1px solid #000;margin:4px 0 8px}.meta{width:100%;border-collapse:collapse;table-layout:fixed}.meta td{vertical-align:top;width:50%;padding:0}.meta p{margin:0 0 2px}.subject{font-weight:700;text-decoration:underline}.intro,.closing{margin:10px 0 3px;text-align:justify}.identity{width:100%;border-collapse:collapse;margin:0}.identity td{padding:1px 2px;vertical-align:top}.identity td:first-child{width:31%}.identity td:nth-child(2){width:3%}.narrative{margin:9px 0 5px;text-align:justify}.sign{width:100%;border-collapse:collapse;margin-top:8px;table-layout:fixed}.sign td{width:50%;vertical-align:top;text-align:center}.sign .space{height:52px}.name{font-weight:bold;text-decoration:underline}.pj{margin-top:4px}.tembusan{margin-top:3px}.tembusan div{margin:0}.nowrap{white-space:nowrap}</style></head><body>
-<div class="kop"><img src="{{LOGO}}"><div class="inst1">{{INSTANSI_1}}</div><div class="inst2">{{INSTANSI_2}}</div><div class="alamat">{{ALAMAT_1}}</div><div class="alamat">{{ALAMAT_2}}</div></div><hr class="rule">
-<table class="meta"><tr><td><p>Nomor&nbsp;&nbsp;&nbsp;&nbsp;: {{NOMOR_SURAT}}</p><p>Perihal&nbsp;&nbsp;&nbsp;: Surat Keterangan Penerbitan,</p><p class="subject">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pergantian/Pengesahan STNK</p></td><td><p>{{KOTA_TANGGAL}}</p><p>Kepada</p><p>Yth. {{TUJUAN}}</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;di,-</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tempat</p></td></tr></table>
-<div class="intro">Yang bertandatangan di bawah ini:</div>
-<table class="identity"><tr><td>N a m a</td><td>:</td><td>{{NAMA_PEJABAT}}</td></tr><tr><td>N I P</td><td>:</td><td>{{NIP_PEJABAT}}</td></tr><tr><td>J a b a t a n</td><td>:</td><td>{{JABATAN_PEJABAT}}</td></tr></table>
-<div class="narrative">{{NARASI_SURAT}}</div>
-<table class="identity"><tr><td>Nomor Polisi</td><td>:</td><td>{{NOMOR_POLISI}}</td></tr><tr><td>Nama Pemilik</td><td>:</td><td>{{NAMA_PEMILIK_STNK}}</td></tr><tr><td>Merk/Type</td><td>:</td><td>{{MERK_TYPE}}</td></tr><tr><td>Jenis/Model</td><td>:</td><td>{{NAMA_BARANG_JENIS_MODEL}}</td></tr><tr><td>Tahun Pembuatan</td><td>:</td><td>{{TAHUN_PEMBUATAN}}</td></tr><tr><td>Tahun Perakitan</td><td>:</td><td>{{TAHUN_PERAKITAN}}</td></tr><tr><td>Isi Silinder</td><td>:</td><td>{{ISI_SILINDER}}</td></tr><tr><td>Warna</td><td>:</td><td>{{WARNA}}</td></tr><tr><td>Nomor Rangka</td><td>:</td><td>{{NOMOR_RANGKA}}</td></tr><tr><td>Nomor Mesin</td><td>:</td><td>{{NOMOR_MESIN}}</td></tr><tr><td>BPKB</td><td>:</td><td>{{NOMOR_BPKB}}</td></tr><tr><td>Direkomendasikan untuk</td><td>:</td><td>{{REKOMENDASI}}</td></tr></table>
-<div class="closing">Demikian Surat Keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</div>
-<table class="sign"><tr><td></td><td><div>{{PENANDATANGAN_ATAS_NAMA}}</div><div>{{JABATAN_PEJABAT}},</div><div class="space"></div><div class="name">{{NAMA_PEJABAT}}</div><div>NIP. {{NIP_PEJABAT}}</div></td></tr></table>
-<div class="pj">Penanggung Jawab:</div><div>- {{PENANGGUNG_JAWAB}}</div><div class="tembusan"><div>Tembusan:</div><div>1. Kepala Badan Pengelolaan Keuangan dan Pendapatan Daerah (sebagai Laporan) di Sengkang</div><div>2. Arsip</div></div>
-</body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Surat Rekomendasi STNK</title>
+<style>
+@page{size:A4;margin:11mm 13mm 12mm 13mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#000}
+body{font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.18}
+.page{width:100%;margin:0 auto}
+.kop{text-align:center}
+.kop img{display:block;width:44px;height:49px;object-fit:contain;margin:0 auto 2px}
+.kop .inst1{font-size:10.5pt;line-height:1.05;font-weight:400;text-transform:uppercase}
+.kop .inst2{font-size:10.5pt;line-height:1.05;font-weight:700;text-transform:uppercase}
+.kop .alamat{font-size:9.5pt;line-height:1.08}
+.rule{border:0;border-top:1px solid #000;margin:7px 0 10px}
+.meta{width:100%;border-collapse:collapse;table-layout:fixed}
+.meta td{vertical-align:top;padding:0}
+.meta .left{width:56%}.meta .right{width:44%;padding-left:16px}
+.meta p{margin:0 0 2px}
+.meta-label{display:inline-block;width:50px}
+.subject-line{display:inline-block;font-weight:700;text-decoration:underline;margin-left:54px}
+.intro{margin:32px 0 4px}
+.identity{border-collapse:collapse;width:100%;table-layout:fixed}
+.identity td{padding:1px 0;vertical-align:top}
+.identity td:nth-child(1){width:136px}
+.identity td:nth-child(2){width:17px;text-align:center}
+.identity td:nth-child(3){width:auto}
+.identity.officer td:nth-child(1){width:68px;letter-spacing:2.5px}
+.narrative{margin:25px 0 5px;text-align:justify}
+.closing{margin:8px 0 0;text-align:justify}
+.sign{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:23px}
+.sign td:first-child{width:42%}.sign td:last-child{width:58%;text-align:center;vertical-align:top}
+.sign .title{line-height:1.2}.sign .space{height:58px}
+.sign .name{font-weight:700;text-decoration:underline}.sign .nip{font-weight:700}
+.footer-block{margin-top:24px;line-height:1.25}
+.footer-block p{margin:0}
+.no-break{page-break-inside:avoid}
+@media screen{body{max-width:184mm;margin:0 auto;padding:0}.page{min-height:274mm}}
+@media print{.page{min-height:auto}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="kop">
+    <img src="{{LOGO}}" alt="Logo Kabupaten Wajo">
+    <div class="inst1">{{INSTANSI_1}}</div>
+    <div class="inst2">{{INSTANSI_2}}</div>
+    <div class="alamat">{{ALAMAT_1}}</div>
+    <div class="alamat">{{ALAMAT_2}}</div>
+  </div>
+  <hr class="rule">
+
+  <table class="meta">
+    <tr>
+      <td class="left">
+        <p><span class="meta-label">Nomor</span>: {{NOMOR_SURAT}}</p>
+        <p><span class="meta-label">Perihal</span>: Surat Keterangan Penerbitan,</p>
+        <p class="subject-line">Pergantian/Pengesahan STNK</p>
+      </td>
+      <td class="right">
+        <p>{{KOTA_TANGGAL}}</p>
+        <p>Kepada</p>
+        <p>Yth. {{TUJUAN}}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;di,-</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tempat</p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="intro">Yang bertandatangan di bawah ini:</div>
+  <table class="identity officer no-break">
+    <tr><td>N a m a</td><td>:</td><td>{{NAMA_PEJABAT}}</td></tr>
+    <tr><td>N I P</td><td>:</td><td>{{NIP_PEJABAT}}</td></tr>
+    <tr><td>J a b a t a n</td><td>:</td><td>{{JABATAN_PEJABAT}}</td></tr>
+  </table>
+
+  <div class="narrative">{{NARASI_SURAT}}</div>
+  <table class="identity no-break">
+    <tr><td>Nomor Polisi</td><td>:</td><td>{{NOMOR_POLISI}}</td></tr>
+    <tr><td>Nama Pemilik</td><td>:</td><td>{{NAMA_PEMILIK_STNK}}</td></tr>
+    <tr><td>Merk/Type</td><td>:</td><td>{{MERK_TYPE}}</td></tr>
+    <tr><td>Jenis/Model</td><td>:</td><td>{{NAMA_BARANG_JENIS_MODEL}}</td></tr>
+    <tr><td>Tahun Pembuatan</td><td>:</td><td>{{TAHUN_PEMBUATAN}}</td></tr>
+    <tr><td>Tahun Perakitan</td><td>:</td><td>{{TAHUN_PERAKITAN}}</td></tr>
+    <tr><td>Isi Silinder</td><td>:</td><td>{{ISI_SILINDER}}</td></tr>
+    <tr><td>Warna</td><td>:</td><td>{{WARNA}}</td></tr>
+    <tr><td>Nomor Rangka</td><td>:</td><td>{{NOMOR_RANGKA}}</td></tr>
+    <tr><td>Nomor Mesin</td><td>:</td><td>{{NOMOR_MESIN}}</td></tr>
+    <tr><td>BPKB</td><td>:</td><td>{{NOMOR_BPKB}}</td></tr>
+    <tr><td>Direkomendasikan untuk</td><td>:</td><td>{{REKOMENDASI}}</td></tr>
+  </table>
+
+  <div class="closing">Demikian Surat Keterangan ini dibuat untuk dipergunakan sebagaimana mestinya.</div>
+
+  <table class="sign no-break">
+    <tr>
+      <td></td>
+      <td>
+        <div class="title">{{PENANDATANGAN_ATAS_NAMA}}</div>
+        <div class="title">{{JABATAN_PEJABAT}},</div>
+        <div class="space"></div>
+        <div class="name">{{NAMA_PEJABAT}}</div>
+        <div class="nip">NIP. {{NIP_PEJABAT}}</div>
+      </td>
+    </tr>
+  </table>
+
+  <div class="footer-block no-break">
+    <p>Penanggung Jawab:</p>
+    <p>- {{PENANGGUNG_JAWAB}}</p>
+    <p style="margin-top:5px">Tembusan:</p>
+    <p>1. Kepala Badan Pengelolaan Keuangan dan Pendapatan Daerah (sebagai Laporan) di Sengkang</p>
+    <p>2. Arsip</p>
+  </div>
+</div>
+</body>
+</html>
