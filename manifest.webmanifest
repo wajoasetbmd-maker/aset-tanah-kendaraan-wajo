@@ -1,0 +1,14 @@
+{
+  "name": "ASET TANAH DAN KENDARAAN",
+  "short_name": "ASET WAJO",
+  "description": "Pengelolaan aset tanah dan kendaraan Kabupaten Wajo",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#173f69",
+  "theme_color": "#173f69",
+  "icons": [
+    {"src":"assets/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"assets/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
