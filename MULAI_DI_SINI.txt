@@ -1,8 +1,0 @@
-1. Pastikan Apps Script sudah memakai backend V18.3/V18.3.1 dan deployment /exec lama sudah diperbarui.
-2. Upload seluruh isi paket ini ke root repository Cloudflare Pages.
-3. Tunggu deployment sukses.
-4. Buka aplikasi, tekan Ctrl+F5, lalu login online.
-5. Tunggu indikator di bagian atas berubah menjadi “Data lokal siap”.
-6. Uji pindah Dashboard → Daftar → Detail → Form; halaman membaca data browser.
-7. Buat surat: preview A4 terbuka langsung, lalu perubahan surat disinkronkan ke server.
-8. Klik indikator status di atas untuk memaksa cek pembaruan dan sinkronisasi.
