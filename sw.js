@@ -1,8 +1,8 @@
-const CACHE='aset-wajo-web-v18-0-2-clean';
+const CACHE='sitkaw-web-v18-0-3';
 const SHELL=[
   './','./index.html','./manifest.webmanifest',
   './assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png',
-  './assets/v17-6.css','./assets/app-v1802.js',
+  './assets/v17-6.css','./assets/app-sitkaw-v1803.js',
   './templates/surat_rekomendasi.html','./templates/tanda_terima_bpkb.html'
 ];
 self.addEventListener('install',event=>{
