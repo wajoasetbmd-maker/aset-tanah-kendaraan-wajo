@@ -1,8 +1,8 @@
-const CACHE='sitkaw-web-v18-0-6-delta';
+const CACHE='sitkaw-web-v18-0-8-identity';
 const SHELL=[
   './','./index.html','./manifest.webmanifest',
   './assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png',
-  './assets/v17-6.css','./assets/app-sitkaw-v1807-land-opd.js',
+  './assets/v17-6.css','./assets/app-sitkaw-v1808-identity.js',
   './templates/surat_rekomendasi.html','./templates/tanda_terima_bpkb.html'
 ];
 self.addEventListener('install',event=>{
