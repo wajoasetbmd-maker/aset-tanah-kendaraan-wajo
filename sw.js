@@ -1,4 +1,4 @@
-const CACHE='sitkaw-web-v18-0-5-delta';
+const CACHE='sitkaw-web-v18-0-6-delta';
 const SHELL=[
   './','./index.html','./manifest.webmanifest',
   './assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png',
