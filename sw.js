@@ -1,8 +1,8 @@
-const CACHE='sitkaw-web-v18-0-9-coordinate-map';
+const CACHE='sitkaw-web-v18-0-9-1-login-responsive';
 const SHELL=[
   './','./index.html','./manifest.webmanifest',
   './assets/logo-wajo.png','./assets/icon-192.png','./assets/icon-512.png',
-  './assets/v17-6.css','./assets/app-sitkaw-v1808-identity.js','./assets/app-sitkaw-v1809-coordinate-map.js',
+  './assets/v17-6.css','./assets/app-sitkaw-v1808-identity.js','./assets/app-sitkaw-v1809-1-coordinate-map.js',
   './templates/surat_rekomendasi.html','./templates/tanda_terima_bpkb.html'
 ];
 self.addEventListener('install',event=>{
